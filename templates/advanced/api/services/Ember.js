@@ -17,7 +17,7 @@ var Ember = {
     convertModelName: function (modelName, convertToPlural) {
         if (arguments.length < 2) { convertToPlural = true; }
         if (_.isFunction(sails.config.ember && sails.config.ember.convertModelName)) {
-            return sails.config.ember.convertModelName(modelName);
+            return sails.config.ember.convertModelName(modelName, convertToPlural);
         }
         modelName = _.kebabCase(modelName);
         if (convertToPlural) {
@@ -37,7 +37,7 @@ var Ember = {
     reverseModelName: function (transformedModelName, convertToSingular) {
         if (arguments.length < 2) { convertToSingular = true; }
         if (_.isFunction(sails.config.ember && sails.config.ember.reverseModelName)) {
-            return sails.config.ember.reverseModelName(transformedModelName);
+            return sails.config.ember.reverseModelName(transformedModelName, convertToSingular);
         }
         transformedModelName = _.camelCase(transformedModelName).toLowerCase();
         if (convertToSingular) {
@@ -48,7 +48,7 @@ var Ember = {
 
     linkAssociations: function (model, records) {
         if (!Array.isArray(records)) records = [records];
-        var modelPlural = pluralize(model.identity);
+        var modelPlural = this.convertModelName(model.identity);
 
         return _.map(records, function (record) {
             var links = {};

@@ -3,6 +3,7 @@
  */
 
 var _ = require('lodash'),
+    mergeDefaults = require('merge-defaults'),
     util = require('util');
 
 // Parameter used for jsonp callback is constant, as far as
@@ -311,7 +312,8 @@ module.exports = {
         }
 
         // Get values using the model identity as resource identifier
-        var values = req.param(req._sails.config.ember.convertModelName(model.globalId, false)) || {};
+        // override provided values with any explicitly set in req.options.values
+        var values = mergeDefaults(req.param(req._sails.config.ember.convertModelName(model.globalId, false)) || {}, _.omit(req.options.values, 'blacklist'));
 
         // Omit built-in runtime config (like query modifiers)
         values = _.omit(values, blacklist || []);
